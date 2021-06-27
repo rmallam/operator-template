@@ -1,0 +1,61 @@
+---
+#tasks file for 3scale
+- name: Create "{{ project_name }}" project
+  k8s:
+    host: "{{ api_url }}"
+    api_key: "{{ auth_output.k8s_auth.api_key }}"
+    api_version: v1
+    state: present
+    kind: Namespace
+    name: "{{ project_name }}"
+
+- name: Create an operator group
+  k8s:
+    host: "{{ api_url }}"
+    api_key: "{{ auth_output.k8s_auth.api_key }}"
+    state: present
+    merge_type: merge
+    name: "{{ operator_name }}"
+    namespace: "{{ project_name }}"
+    api_version: operators.coreos.com/v1
+    definition:
+      kind: OperatorGroup
+      spec:
+        targetNamespaces:
+          - "{{ project_name }}"
+
+- name: Create a "{{ project_name }}" operator subscription
+  k8s:
+    host: "{{ api_url }}"
+    api_key: "{{ auth_output.k8s_auth.api_key }}"
+    definition:
+      apiVersion: "{{ operator_api_group }}"
+      kind: Subscription
+      metadata:
+        name: "{{ operator_name }}"
+        namespace: "{{ project_name }}"
+      spec:
+        channel: "{{ operator_channel }}"
+        installPlanApproval: "{{ operator_plan_approval }}"
+        name: "{{ operator_name }}"
+        source: "{{ operator_source }}"
+        sourceNamespace: "{{ operator_source_namespace }}"
+        startingCSV: "{{ operator_startingCSV }}"
+
+- name: Create a custom resource
+  k8s:
+    host: "{{ api_url }}"
+    api_key: "{{ auth_output.k8s_auth.api_key }}"
+    api_version: v1alpha1
+    state: present
+    kind: APIManager
+    merge_type: merge
+    name: "{{ cr_name }}"
+    namespace: "{{ project_name }}"
+    definition: 
+      spec:
+        wildcardDomain: apps.aro-dx-integration-dev.ds.ahunga.co.nz
+        system:
+          fileStorage:
+            persistentVolumeClaim:
+              storageClassName: azurefiles

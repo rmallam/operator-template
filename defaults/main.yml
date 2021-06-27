@@ -1,0 +1,12 @@
+---
+# defaults file for 3scale
+project_name: "3scale"
+operator_channel: "threescale-2.9"
+operator_plan_approval: "Automatic"
+operator_name: "3scale-operator"
+operator_source: "redhat-operators"
+operator_source_namespace: "openshift-marketplace"
+operator_startingCSV: "3scale-operator.v0.6.1"
+operator_api_group: "operators.coreos.com/v1alpha1"
+
+cr_name: "3scaleapimanager"
