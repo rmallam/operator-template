@@ -54,7 +54,7 @@
     namespace: "{{ project_name }}"
     definition: 
       spec:
-        wildcardDomain: apps.aro-dx-integration-dev.ds.ahunga.co.nz
+        wildcardDomain: apps.aro.dev.themallams.com
         system:
           fileStorage:
             persistentVolumeClaim:
